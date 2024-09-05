@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ReSharperGamificationApi.DTO;
@@ -13,36 +11,39 @@ namespace ReSharperGamificationApi.Controllers
 {
     [Route("api/v1/achievements")]
     [ApiController]
-    public class AchievementsController(AchievementContext context, IAchievementService service) : ControllerBase
+    public class AchievementsController(IMapper mapper, AchievementContext context, IAchievementService service) : ControllerBase
     {
-        private readonly AchievementContext _context = context;
-
-        // GET: api/Achievement
+        // GET: api/v1/achievements
         [HttpGet]
+        [AllowAnonymous]
+        [EnableCors("FrontendGetPolicy")]
         public async Task<ActionResult<IEnumerable<AchievementDTO>>> GetAchievements()
         {
-            return await _context.Achievements
-                .Select(achievement => MapToDTO(achievement))
+            return await context.Achievements
+                .Select(achievement => mapper.Map<AchievementDTO>(achievement))
                 .ToListAsync();
         }
 
-        // GET: api/Achievement/5
-        [HttpGet("{id}")]
+        // GET: api/v1/achievements/5
+        [HttpGet("{id:long}")]
+        [AllowAnonymous]
+        [EnableCors("FrontendGetPolicy")]
         public async Task<ActionResult<AchievementDTO>> GetAchievement(long id)
         {
-            var achievement = await _context.Achievements.FindAsync(id);
+            var achievement = await context.Achievements.FindAsync(id);
 
             if (achievement == null)
             {
                 return NotFound();
             }
 
-            return MapToDTO(achievement);
+            return mapper.Map<AchievementDTO>(achievement);
         }
 
-        // PUT: api/Achievement/5
+        // PUT: api/v1/achievements/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        [Authorize]
+        [HttpPut("{id:long}")]
         public async Task<IActionResult> PutAchievement(long id, AchievementDTO dto)
         {
             if (id != dto.Id)
@@ -50,13 +51,12 @@ namespace ReSharperGamificationApi.Controllers
                 return BadRequest();
             }
 
-            var achievement = MapToModel(dto);
-
-            _context.Entry(achievement).State = EntityState.Modified;
+            var achievement = mapper.Map<Achievement>(dto);
+            context.Entry(achievement).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -73,50 +73,36 @@ namespace ReSharperGamificationApi.Controllers
             return NoContent();
         }
 
-        // POST: api/Achievement
+        // POST: api/v1/achievements
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<IEnumerable<AchievementDTO>>> PostAchievement(AchievementWithGradesDTO dto)
         {
-            var saved = await service.SaveAll(dto.Group, dto.Grades, "meow");
-            return CreatedAtAction(nameof(GetAchievements), saved.Select(MapToDTO));
+            var saved = await service.SaveAll(dto.UserId, dto.Group, dto.Grades);
+            return CreatedAtAction(nameof(GetAchievements), saved.Select(mapper.Map<AchievementDTO>));
         }
 
-        // DELETE: api/Achievement/5
+        // DELETE: api/v1/achievements/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAchievement(int id)
         {
-            var achievement = await _context.Achievements.FindAsync(id);
+            var achievement = await context.Achievements.FindAsync(id);
             if (achievement == null)
             {
                 return NotFound();
             }
 
-            _context.Achievements.Remove(achievement);
-            await _context.SaveChangesAsync();
+            context.Achievements.Remove(achievement);
+            await context.SaveChangesAsync();
 
             return NoContent();
         }
 
         private bool AchievementExists(long id)
         {
-            return _context.Achievements.Any(e => e.Id == id);
+            return context.Achievements.Any(e => e.Id == id);
         }
-
-        private static AchievementDTO MapToDTO(Achievement achievement) => new()
-        {
-            Id = achievement.Id,
-            User = achievement.User,
-            Group = achievement.Group,
-            Grade = achievement.Grade,
-        };
-
-        private static Achievement MapToModel(AchievementDTO dto) => new()
-        {
-            Id = dto.Id,
-            User = dto.User,
-            Group = dto.Group,
-            Grade = dto.Grade,
-        };
     }
 }

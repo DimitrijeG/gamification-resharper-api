@@ -4,6 +4,6 @@ namespace ReSharperGamificationApi.Services
 {
     public interface IAchievementService
     {
-        public Task<IEnumerable<Achievement>> SaveAll(string group, IEnumerable<string> grades, string user);
+        public Task<IEnumerable<Achievement>> SaveAll(string userId, string group, IEnumerable<string> grades);
     }
 }

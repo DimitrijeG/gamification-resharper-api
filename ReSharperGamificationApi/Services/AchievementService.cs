@@ -4,10 +4,10 @@ namespace ReSharperGamificationApi.Services
 {
     public class AchievementService(AchievementContext context, ILogger<AchievementService> logger) : IAchievementService
     {
-        public async Task<IEnumerable<Achievement>> SaveAll(string group, IEnumerable<string> grades, string user)
+        public async Task<IEnumerable<Achievement>> SaveAll(string userId, string group, IEnumerable<string> grades)
         {
             var achievements = grades
-                .Select(grade => new Achievement { User = user, Group = group, Grade = grade })
+                .Select(grade => new Achievement { UserId = userId, Group = group, Grade = grade })
                 .ToList();
 
             foreach (var achievement in achievements)
