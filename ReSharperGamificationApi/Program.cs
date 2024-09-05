@@ -13,24 +13,6 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<AchievementContext>(opt =>
     opt.UseInMemoryDatabase("Achievements"));
 
-// Configure CORS
-const string frontendCors = "FrontendGetPolicy";
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(policy =>
-    {
-        policy.AllowAnyOrigin()
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-    });
-    options.AddPolicy(frontendCors, policy =>
-    {
-        policy.WithOrigins("http://localhost:4200")
-            .AllowAnyHeader()
-            .WithMethods("GET");
-    });
-});
-
 // Configure logging
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
@@ -46,6 +28,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateIssuerSigningKey = true,
+            ValidateLifetime = false, // todo: consider
             ValidIssuer = "https://oauth.account.jetbrains.com/",
             ValidAudience = "ide"
         };
@@ -74,9 +57,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors(frontendCors);
+
 app.UseAuthentication();
+
 app.UseAuthorization();
+
 app.MapControllers();
 
 app.Run();

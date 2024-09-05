@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ReSharperGamificationApi.DTO;
@@ -14,9 +13,8 @@ namespace ReSharperGamificationApi.Controllers
     public class AchievementsController(IMapper mapper, AchievementContext context, IAchievementService service) : ControllerBase
     {
         // GET: api/v1/achievements
+        [Authorize]
         [HttpGet]
-        [AllowAnonymous]
-        [EnableCors("FrontendGetPolicy")]
         public async Task<ActionResult<IEnumerable<AchievementDTO>>> GetAchievements()
         {
             return await context.Achievements
@@ -26,8 +24,6 @@ namespace ReSharperGamificationApi.Controllers
 
         // GET: api/v1/achievements/5
         [HttpGet("{id:long}")]
-        [AllowAnonymous]
-        [EnableCors("FrontendGetPolicy")]
         public async Task<ActionResult<AchievementDTO>> GetAchievement(long id)
         {
             var achievement = await context.Achievements.FindAsync(id);
