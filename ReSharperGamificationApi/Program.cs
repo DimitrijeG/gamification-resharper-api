@@ -1,17 +1,19 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using ReSharperGamificationApi.Models;
-using ReSharperGamificationApi.Services;
+using ReSharperGamificationApi.Model;
+using ReSharperGamificationApi.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddAutoMapper(typeof(GamificationProfile));
 builder.Services.AddScoped<IAchievementService, AchievementService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddControllers();
-builder.Services.AddDbContext<AchievementContext>(opt =>
-    opt.UseInMemoryDatabase("Achievements"));
+builder.Services.AddDbContext<GamificationContext>(opt =>
+    opt.UseSqlite("Data Source=gamification.sqlite"));
 
 // Configure logging
 builder.Logging.ClearProviders();
@@ -44,6 +46,23 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             }
         };
     });
+
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1);
+    options.ReportApiVersions = true;
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ApiVersionReader = ApiVersionReader.Combine(
+        new UrlSegmentApiVersionReader(),
+        new QueryStringApiVersionReader(),
+        new HeaderApiVersionReader("X-Api-Version"));
+})
+.AddMvc()
+.AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'V";
+    options.SubstituteApiVersionInUrl = true;
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
