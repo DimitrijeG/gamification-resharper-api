@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 
-namespace ReSharperGamificationApi.Model;
+namespace ReSharperGamificationApi.Models;
 
 public static class DbSetExtensions
 {

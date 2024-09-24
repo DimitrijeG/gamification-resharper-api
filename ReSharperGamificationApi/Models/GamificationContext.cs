@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace ReSharperGamificationApi.Model;
+namespace ReSharperGamificationApi.Models;
 
 public class GamificationContext(DbContextOptions<GamificationContext> options) : DbContext(options)
 {

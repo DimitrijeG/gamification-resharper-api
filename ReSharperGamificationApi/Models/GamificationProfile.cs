@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using ReSharperGamificationApi.Dto;
+using ReSharperGamificationApi.Dtos;
 
-namespace ReSharperGamificationApi.Model;
+namespace ReSharperGamificationApi.Models;
 
 public class GamificationProfile : Profile
 {

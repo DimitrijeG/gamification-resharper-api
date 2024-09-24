@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
-namespace ReSharperGamificationApi.Model;
+namespace ReSharperGamificationApi.Models;
 
 [Index(nameof(Uid), IsUnique = true)]
 public class User

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 
-namespace ReSharperGamificationApi.Model;
+namespace ReSharperGamificationApi.Models;
 
 [Index(nameof(Name), IsUnique = true)]
 public class Grade

@@ -1,12 +1,12 @@
-﻿using Asp.Versioning;
+﻿using System.Security.Claims;
+using Asp.Versioning;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ReSharperGamificationApi.Dto;
-using ReSharperGamificationApi.Service;
-using System.Security.Claims;
+using ReSharperGamificationApi.Dtos;
+using ReSharperGamificationApi.Services;
 
-namespace ReSharperGamificationApi.Controller;
+namespace ReSharperGamificationApi.Controllers;
 
 [ApiVersion(1)]
 [ApiController]
@@ -23,7 +23,8 @@ public class AchievementController(
 
     // POST: api/v1/achievements
     [MapToApiVersion(1)]
-    [HttpPost, Authorize]
+    [HttpPost]
+    [Authorize]
     public async Task<ActionResult<IEnumerable<AchievementDtoV1>>> PostAchievementV1(AchievementWithGradesDtoV1 dto)
     {
         try

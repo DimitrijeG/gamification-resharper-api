@@ -2,8 +2,8 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using ReSharperGamificationApi.Model;
-using ReSharperGamificationApi.Service;
+using ReSharperGamificationApi.Models;
+using ReSharperGamificationApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,21 +48,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddApiVersioning(options =>
-{
-    options.DefaultApiVersion = new ApiVersion(1);
-    options.ReportApiVersions = true;
-    options.AssumeDefaultVersionWhenUnspecified = true;
-    options.ApiVersionReader = ApiVersionReader.Combine(
-        new UrlSegmentApiVersionReader(),
-        new QueryStringApiVersionReader(),
-        new HeaderApiVersionReader("X-Api-Version"));
-})
-.AddMvc()
-.AddApiExplorer(options =>
-{
-    options.GroupNameFormat = "'v'V";
-    options.SubstituteApiVersionInUrl = true;
-});
+    {
+        options.DefaultApiVersion = new ApiVersion(1);
+        options.ReportApiVersions = true;
+        options.AssumeDefaultVersionWhenUnspecified = true;
+        options.ApiVersionReader = ApiVersionReader.Combine(
+            new UrlSegmentApiVersionReader(),
+            new QueryStringApiVersionReader(),
+            new HeaderApiVersionReader("X-Api-Version"));
+    })
+    .AddMvc()
+    .AddApiExplorer(options =>
+    {
+        options.GroupNameFormat = "'v'V";
+        options.SubstituteApiVersionInUrl = true;
+    });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

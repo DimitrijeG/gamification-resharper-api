@@ -1,7 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
-namespace ReSharperGamificationApi.Model;
+namespace ReSharperGamificationApi.Models;
 
 [Index(nameof(GradeId), nameof(UserId), IsUnique = true)]
 public class Achievement

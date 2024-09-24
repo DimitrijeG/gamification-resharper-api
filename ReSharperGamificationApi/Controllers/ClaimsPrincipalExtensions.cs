@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace ReSharperGamificationApi.Controller;
+namespace ReSharperGamificationApi.Controllers;
 
 public static class ClaimsPrincipalExtensions
 {
@@ -14,5 +14,5 @@ public static class ClaimsPrincipalExtensions
     }
 }
 
-public class ClaimDoesNotExistException(string claim) 
+public class ClaimDoesNotExistException(string claim)
     : Exception($"Claim {claim} does not exist");

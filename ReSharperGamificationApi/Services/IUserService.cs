@@ -1,6 +1,6 @@
-﻿using ReSharperGamificationApi.Model;
+﻿using ReSharperGamificationApi.Models;
 
-namespace ReSharperGamificationApi.Service;
+namespace ReSharperGamificationApi.Services;
 
 public interface IUserService
 {
