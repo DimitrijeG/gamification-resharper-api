@@ -3,6 +3,7 @@ using Asp.Versioning;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ReSharperGamificationApi.Dtos;
 using ReSharperGamificationApi.Services;
 
@@ -11,8 +12,8 @@ namespace ReSharperGamificationApi.Controllers;
 [ApiVersion(1)]
 [ApiController]
 [Route("api/v{v:apiVersion}/achievements")]
-public class AchievementController(
-    ILogger<AchievementController> logger,
+public class AchievementsApiController(
+    ILogger<AchievementsApiController> logger,
     IMapper mapper,
     IAchievementService achievementService,
     IUserService userService) : ControllerBase
@@ -21,11 +22,21 @@ public class AchievementController(
     private const string FirstNameClaim = "first_name";
     private const string LastNameClaim = "last_name";
 
+    // GET: api/v1/achievements
+    [MapToApiVersion(1)]
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<AchievementDtoV1>>> GetAchievementsV1()
+    {
+        return await achievementService.Achievements
+            .Select(a => mapper.Map<AchievementDtoV1>(a))
+            .ToListAsync();
+    }
+
     // POST: api/v1/achievements
     [MapToApiVersion(1)]
     [HttpPost]
     [Authorize]
-    public async Task<ActionResult<IEnumerable<AchievementDtoV1>>> PostAchievementV1(AchievementWithGradesDtoV1 dto)
+    public async Task<ActionResult<IEnumerable<AchievementDtoV1>>> PostAchievementsV1(AchievementWithGradesDtoV1 dto)
     {
         try
         {
@@ -35,11 +46,12 @@ public class AchievementController(
             var lastName = claims.Find(LastNameClaim);
             logger.LogInformation("User claims {firstName} {lastName}", firstName, lastName);
 
-            var user = await userService.FindOrSave(uid, firstName, lastName);
+            var user = await userService.FindOrSaveAsync(uid, firstName, lastName);
             var saved = await achievementService
                 .SaveAll(user, dto.Group, dto.Grades);
 
-            return Ok(saved.Select(mapper.Map<AchievementDtoV1>));
+            var mapped = saved.Select(mapper.Map<AchievementDtoV1>);
+            return CreatedAtAction(nameof(GetAchievementsV1), mapped);
         }
         catch (ClaimDoesNotExistException e)
         {

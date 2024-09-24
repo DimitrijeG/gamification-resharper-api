@@ -2,9 +2,9 @@
 
 namespace ReSharperGamificationApi.Dtos;
 
-public class UserDtoV1
+public class LeaderboardEntryDtoV1
 {
-    [JsonPropertyName("id")] public long Id { get; set; }
+    [JsonPropertyName("position")] public int Position { get; set; }
 
     [JsonPropertyName("firstName")] public string FirstName { get; set; } = string.Empty;
 

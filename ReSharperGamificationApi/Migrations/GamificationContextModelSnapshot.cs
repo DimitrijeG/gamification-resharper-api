@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using ReSharperGamificationApi.Model;
+using ReSharperGamificationApi.Models;
 
 #nullable disable
 
@@ -16,7 +16,7 @@ namespace ReSharperGamificationApi.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
 
-            modelBuilder.Entity("ReSharperGamificationApi.Model.Achievement", b =>
+            modelBuilder.Entity("ReSharperGamificationApi.Models.Achievements.Achievement", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -30,14 +30,15 @@ namespace ReSharperGamificationApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GradeId");
-
                     b.HasIndex("UserId");
+
+                    b.HasIndex("GradeId", "UserId")
+                        .IsUnique();
 
                     b.ToTable("Achievements");
                 });
 
-            modelBuilder.Entity("ReSharperGamificationApi.Model.Grade", b =>
+            modelBuilder.Entity("ReSharperGamificationApi.Models.Achievements.Grade", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -58,10 +59,78 @@ namespace ReSharperGamificationApi.Migrations
 
                     b.HasIndex("GroupId");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("Grades");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            GroupId = 1L,
+                            Name = "Bronze medal",
+                            Points = 50.0
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            GroupId = 1L,
+                            Name = "Silver medal",
+                            Points = 50.0
+                        },
+                        new
+                        {
+                            Id = 3L,
+                            GroupId = 1L,
+                            Name = "Gold medal",
+                            Points = 50.0
+                        },
+                        new
+                        {
+                            Id = 4L,
+                            GroupId = 2L,
+                            Name = "Yellow belt",
+                            Points = 50.0
+                        },
+                        new
+                        {
+                            Id = 5L,
+                            GroupId = 2L,
+                            Name = "Blue belt",
+                            Points = 50.0
+                        },
+                        new
+                        {
+                            Id = 6L,
+                            GroupId = 2L,
+                            Name = "Black belt",
+                            Points = 50.0
+                        },
+                        new
+                        {
+                            Id = 7L,
+                            GroupId = 3L,
+                            Name = "Amethyst ring",
+                            Points = 50.0
+                        },
+                        new
+                        {
+                            Id = 8L,
+                            GroupId = 3L,
+                            Name = "Emerald ring",
+                            Points = 50.0
+                        },
+                        new
+                        {
+                            Id = 9L,
+                            GroupId = 3L,
+                            Name = "Diamond ring",
+                            Points = 50.0
+                        });
                 });
 
-            modelBuilder.Entity("ReSharperGamificationApi.Model.Group", b =>
+            modelBuilder.Entity("ReSharperGamificationApi.Models.Achievements.Group", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -74,10 +143,30 @@ namespace ReSharperGamificationApi.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("Groups");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            Name = "Refactoring"
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            Name = "Formatting"
+                        },
+                        new
+                        {
+                            Id = 3L,
+                            Name = "Autocompletion"
+                        });
                 });
 
-            modelBuilder.Entity("ReSharperGamificationApi.Model.User", b =>
+            modelBuilder.Entity("ReSharperGamificationApi.Models.User", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -93,6 +182,9 @@ namespace ReSharperGamificationApi.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("TEXT");
 
+                    b.Property<double>("Points")
+                        .HasColumnType("REAL");
+
                     b.Property<string>("Uid")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -106,15 +198,15 @@ namespace ReSharperGamificationApi.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("ReSharperGamificationApi.Model.Achievement", b =>
+            modelBuilder.Entity("ReSharperGamificationApi.Models.Achievements.Achievement", b =>
                 {
-                    b.HasOne("ReSharperGamificationApi.Model.Grade", "Grade")
+                    b.HasOne("ReSharperGamificationApi.Models.Achievements.Grade", "Grade")
                         .WithMany()
                         .HasForeignKey("GradeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ReSharperGamificationApi.Model.User", "User")
+                    b.HasOne("ReSharperGamificationApi.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -125,15 +217,20 @@ namespace ReSharperGamificationApi.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ReSharperGamificationApi.Model.Grade", b =>
+            modelBuilder.Entity("ReSharperGamificationApi.Models.Achievements.Grade", b =>
                 {
-                    b.HasOne("ReSharperGamificationApi.Model.Group", "Group")
-                        .WithMany()
+                    b.HasOne("ReSharperGamificationApi.Models.Achievements.Group", "Group")
+                        .WithMany("Grades")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Group");
+                });
+
+            modelBuilder.Entity("ReSharperGamificationApi.Models.Achievements.Group", b =>
+                {
+                    b.Navigation("Grades");
                 });
 #pragma warning restore 612, 618
         }

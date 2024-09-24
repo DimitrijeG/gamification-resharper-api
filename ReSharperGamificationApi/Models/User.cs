@@ -10,4 +10,5 @@ public class User
     [MaxLength(200)] public string Uid { get; set; } = string.Empty;
     [MaxLength(200)] public string FirstName { get; set; } = string.Empty;
     [MaxLength(200)] public string LastName { get; set; } = string.Empty;
+    public double Points { get; set; }
 }

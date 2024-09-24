@@ -234,4 +234,7 @@ _Pvt_Extensions
 .fake/
 
 # Database
-*.sqlite
+*.sqlite*
+
+# Migrations
+*[Mm]igrations/
