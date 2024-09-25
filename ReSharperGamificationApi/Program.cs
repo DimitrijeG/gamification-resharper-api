@@ -11,9 +11,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAutoMapper(typeof(GamificationProfile));
 builder.Services.AddScoped<IAchievementService, AchievementService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ILeaderboardService, LeaderboardService>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
+
+builder.Services.AddSignalR();
 
 builder.Services.AddDbContext<GamificationContext>(opt =>
     opt.UseSqlite("Data Source=gamification.sqlite"));
@@ -33,7 +36,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateIssuerSigningKey = true,
-            ValidateLifetime = false, // todo: consider
+            ValidateLifetime = false,
             ValidIssuer = "https://oauth.account.jetbrains.com/",
             ValidAudience = "ide"
         };
@@ -75,8 +78,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseStaticFiles();
+
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapHub<LeaderboardHub>("/leaderboardHub");
 
 app.MapControllers();
 app.MapDefaultControllerRoute();

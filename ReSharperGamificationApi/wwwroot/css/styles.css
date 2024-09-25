@@ -1,0 +1,68 @@
+﻿.container {
+    padding-inline: 60px;
+}
+
+h1 {
+    color: #343a40;
+}
+
+.table {
+    margin-bottom: 2rem;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table th, .table td {
+    vertical-align: middle;
+    padding: 15px;
+    font-size: 16px;
+    border: 1px solid #dee2e6;
+}
+
+.thead-dark th {
+    background-color: #495057;
+    color: #fff;
+}
+
+.table tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+.table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.pagination {
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* Custom pagination link styles */
+.pagination .page-item .page-link {
+    font-size: 18px;
+    padding: 8px 15px;
+    color: #343a40;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+}
+
+/* Hover state for pagination */
+.pagination .page-link:hover {
+    background-color: #e9ecef;
+    color: #343a40;
+}
+
+/* Disabled state for pagination */
+.pagination .page-item.disabled .page-link {
+    color: #6c757d;
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+}
+
+/* Active page styling */
+.pagination .page-item.active .page-link {
+    color: #fff;
+    background-color: #495057;
+    border-color: #495057;
+}

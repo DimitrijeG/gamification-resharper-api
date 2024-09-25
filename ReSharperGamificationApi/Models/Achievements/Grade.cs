@@ -8,7 +8,7 @@ public class Grade
 {
     public long Id { get; set; }
     [MaxLength(100)] public string Name { get; set; } = string.Empty;
-    public double Points { get; set; } = 50;
+    public double Points { get; set; }
     public long GroupId { get; set; }
     public Group Group { get; set; } = null!;
 }
