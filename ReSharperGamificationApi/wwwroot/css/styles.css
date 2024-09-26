@@ -38,31 +38,19 @@ h1 {
     margin-top: 20px;
 }
 
-/* Custom pagination link styles */
-.pagination .page-item .page-link {
+.pagination .page-list .page-link {
     font-size: 18px;
     padding: 8px 15px;
-    color: #343a40;
-    background-color: #f8f9fa;
-    border: 1px solid #dee2e6;
 }
 
-/* Hover state for pagination */
-.pagination .page-link:hover {
-    background-color: #e9ecef;
-    color: #343a40;
-}
-
-/* Disabled state for pagination */
 .pagination .page-item.disabled .page-link {
     color: #6c757d;
     background-color: #f8f9fa;
     border-color: #dee2e6;
 }
 
-/* Active page styling */
 .pagination .page-item.active .page-link {
-    color: #fff;
-    background-color: #495057;
-    border-color: #495057;
+    color: #6c757d;
+    background-color: #fff;
+    border-color: #dee2e6;
 }
