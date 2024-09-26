@@ -12,8 +12,8 @@ namespace ReSharperGamificationApi.Controllers;
 [ApiVersion(1)]
 [ApiController]
 [Route("api/v{v:apiVersion}/achievements")]
-public class AchievementsApiController(
-    ILogger<AchievementsApiController> logger,
+public class AchievementsController(
+    ILogger<AchievementsController> logger,
     IMapper mapper,
     IAchievementService achievementService,
     IUserService userService) : ControllerBase

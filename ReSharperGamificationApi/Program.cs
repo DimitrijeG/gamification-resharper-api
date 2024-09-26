@@ -2,6 +2,7 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using ReSharperGamificationApi.Hubs;
 using ReSharperGamificationApi.Models;
 using ReSharperGamificationApi.Services;
 
@@ -13,10 +14,13 @@ builder.Services.AddScoped<IAchievementService, AchievementService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ILeaderboardService, LeaderboardService>();
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 builder.Services.AddControllers();
 
-builder.Services.AddSignalR();
+builder.Services.AddSignalR().AddHubOptions<LeaderboardHub>(options =>
+{
+    options.EnableDetailedErrors = true;
+});
 
 builder.Services.AddDbContext<GamificationContext>(opt =>
     opt.UseSqlite("Data Source=gamification.sqlite"));
@@ -85,6 +89,7 @@ app.UseAuthorization();
 
 app.MapHub<LeaderboardHub>("/leaderboardHub");
 
+app.MapRazorPages();
 app.MapControllers();
 app.MapDefaultControllerRoute();
 

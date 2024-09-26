@@ -54,3 +54,7 @@ h1 {
     background-color: #fff;
     border-color: #dee2e6;
 }
+
+.pagination .page-item.active .page-link:hover {
+    background-color: #f8f9fa;
+}

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using ReSharperGamificationApi.Hubs;
 using ReSharperGamificationApi.Models;
 using ReSharperGamificationApi.Models.Achievements;
 
@@ -13,7 +14,7 @@ public interface IAchievementService
 
 public class AchievementService(
     ILogger<AchievementService> logger, 
-    IHubContext<LeaderboardHub> hubContext,
+    IHubContext<LeaderboardHub, ILeaderboardHub> hubContext,
     GamificationContext context) : IAchievementService
 {
     private const double CompletedGroupPointsBonus = 100;
@@ -29,7 +30,7 @@ public class AchievementService(
 
         var unlocked = await GetByUserAndGroup(user.Id, group.Id);
         var newAchievements = grades
-            .Where(grade => !unlocked.Exists(a => a.Grade.Equals(grade)))
+            .Where(grade => !unlocked.Exists(a => a.GradeId.Equals(grade.Id)))
             .Select(grade => new Achievement { Grade = grade, User = user })
             .ToList();
 
@@ -42,7 +43,7 @@ public class AchievementService(
 
         await context.Achievements.AddRangeAsync(newAchievements);
         await context.SaveChangesAsync();
-        await hubContext.UpdateLeaderboardAsync();
+        await hubContext.Clients.All.UpdateLeaderboard();
         return newAchievements;
     }
 

@@ -9,7 +9,8 @@ public class GamificationProfile : Profile
     public GamificationProfile()
     {
         CreateMap<User, UserDtoV1>();
-        CreateMap<User, LeaderboardEntryDtoV1>();
+
+        CreateMap<LeaderboardEntry, LeaderboardEntryDtoV1>();
 
         CreateMap<Group, GroupDtoV1>();
         CreateMap<Grade, GradeDtoV1>();

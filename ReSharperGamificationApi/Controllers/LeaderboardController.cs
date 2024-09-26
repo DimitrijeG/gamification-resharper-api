@@ -1,31 +1,27 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Asp.Versioning;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using ReSharperGamificationApi.Dtos;
 using ReSharperGamificationApi.Services;
-using ReSharperGamificationApi.ViewModels;
 
 namespace ReSharperGamificationApi.Controllers;
 
-[Route("leaderboard")]
-[Controller]
-public class LeaderboardController(ILeaderboardService leaderboardService) : Controller
+[Route("api/v{v:apiVersion}/leaderboard")]
+[ApiController]
+[ApiVersion(1)]
+public class LeaderboardController(
+    IMapper mapper,
+    ILeaderboardService leaderboardService) : ControllerBase
 {
-    // GET: leaderboard
+    // GET: api/v1/leaderboard
+    [MapToApiVersion(1)]
     [HttpGet]
-    public async Task<IActionResult> Leaderboard(int pageNumber = 1, int pageSize = 10)
+    public async Task<ActionResult<IEnumerable<LeaderboardEntryDtoV1>>> GetLeaderboardV1(
+        int pageNumber = 1, int pageSize = 10)
     {
-        var totalUsers = await leaderboardService.CountAsync();
-        var totalPages = (int)Math.Ceiling(totalUsers / (double)pageSize);
-
         var entries = await leaderboardService
             .GetPaginatedAsync(pageNumber, pageSize);
 
-        var viewModel = new PaginatedLeaderboardViewModel
-        {
-            CurrentPage = pageNumber,
-            PageSize = pageSize,
-            TotalPages = totalPages,
-            LeaderboardEntries = entries
-        };
-
-        return View(viewModel);
+        return Ok(entries.Select(mapper.Map<LeaderboardEntryDtoV1>));
     }
 }

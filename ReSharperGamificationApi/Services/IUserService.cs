@@ -2,6 +2,11 @@
 
 namespace ReSharperGamificationApi.Services;
 
+public class AA
+{
+
+}
+
 public interface IUserService
 {
     public Task<User> FindOrSaveAsync(string uid, string firstName, string lastName);
