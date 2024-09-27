@@ -7,7 +7,7 @@ public class Achievement
 {
     public long Id { get; set; }
     public long GradeId { get; set; }
-    public Grade Grade { get; set; } = null!;
+    public virtual Grade Grade { get; set; } = null!;
     public long UserId { get; set; }
-    public User User { get; set; } = null!;
+    public virtual User User { get; set; } = null!;
 }

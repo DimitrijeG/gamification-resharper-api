@@ -10,5 +10,5 @@ public class Grade
     [MaxLength(100)] public string Name { get; set; } = string.Empty;
     public double Points { get; set; }
     public long GroupId { get; set; }
-    public Group Group { get; set; } = null!;
+    public virtual Group Group { get; set; } = null!;
 }

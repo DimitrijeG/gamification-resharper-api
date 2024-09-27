@@ -1,6 +1,6 @@
-﻿var script = $('script[src*=leaderboard');
-var pageNumber = parseInt(script.attr('pageNumber'));
-var pageSize = parseInt(script.attr('pageSize'));
+﻿var script = $("script[src*=leaderboard");
+var pageNumber = parseInt(script.attr("pageNumber"));
+var pageSize = parseInt(script.attr("pageSize"));
 
 const connection = new signalR.HubConnectionBuilder()
     .withUrl("/leaderboardHub")

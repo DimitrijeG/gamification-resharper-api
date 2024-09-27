@@ -2,28 +2,16 @@
 
 namespace ReSharperGamificationApi.Services;
 
-public class AA
-{
-
-}
-
 public interface IUserService
 {
     public Task<User> FindOrSaveAsync(string uid, string firstName, string lastName);
 }
 
-public class UserService(ILogger<UserService> logger, GamificationContext context) : IUserService
+public class UserService(GamificationContext context) : IUserService
 {
     public async Task<User> FindOrSaveAsync(string uid, string firstName, string lastName)
     {
-        logger.LogInformation("User: {uid} {firstName} {lastName}", uid, firstName, lastName);
-
         var newUser = new User { Uid = uid, FirstName = firstName, LastName = lastName };
-        var user = await context.Users.FindOrAddAsync(context, u => u.Uid.Equals(uid), newUser);
-
-        await context.SaveChangesAsync();
-
-        logger.LogInformation("Saved: {id} {uid}", user.Id, user.Uid);
-        return user;
+        return await context.Users.FindOrAddAsync(context, u => u.Uid.Equals(uid), newUser);
     }
 }

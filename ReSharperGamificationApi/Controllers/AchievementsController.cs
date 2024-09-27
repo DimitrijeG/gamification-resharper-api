@@ -13,7 +13,6 @@ namespace ReSharperGamificationApi.Controllers;
 [ApiController]
 [Route("api/v{v:apiVersion}/achievements")]
 public class AchievementsController(
-    ILogger<AchievementsController> logger,
     IMapper mapper,
     IAchievementService achievementService,
     IUserService userService) : ControllerBase
@@ -44,8 +43,6 @@ public class AchievementsController(
             var uid = claims.Find(UserIdClaim);
             var firstName = claims.Find(FirstNameClaim);
             var lastName = claims.Find(LastNameClaim);
-            logger.LogInformation("User claims {firstName} {lastName}", firstName, lastName);
-
             var user = await userService.FindOrSaveAsync(uid, firstName, lastName);
             var saved = await achievementService
                 .SaveAll(user, dto.Group, dto.Grades);

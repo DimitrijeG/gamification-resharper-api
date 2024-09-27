@@ -13,9 +13,8 @@ public interface IAchievementService
 }
 
 public class AchievementService(
-    ILogger<AchievementService> logger, 
-    IHubContext<LeaderboardHub, ILeaderboardHub> hubContext,
-    GamificationContext context) : IAchievementService
+    GamificationContext context,
+    IHubContext<LeaderboardHub, ILeaderboardHub> hubContext) : IAchievementService
 {
     private const double CompletedGroupPointsBonus = 100;
 
@@ -36,8 +35,7 @@ public class AchievementService(
 
         if (newAchievements.Count == 0) return [];
 
-        var groupGradesCount = await CountGradesByGroupAsync(group.Id);
-        if (groupGradesCount.Equals(unlocked.Count + newAchievements.Count))
+        if (group.Grades.Count.Equals(unlocked.Count + newAchievements.Count))
             user.Points += CompletedGroupPointsBonus;
         user.Points += newAchievements.Sum(a => a.Grade.Points);
 
@@ -54,21 +52,14 @@ public class AchievementService(
             .ToListAsync();
     }
 
-    private Task<int> CountGradesByGroupAsync(long groupId)
-    {
-        return context.Grades.CountAsync(g => g.GroupId.Equals(groupId));
-    }
-
     private Task<Group> FindOrAddGroupAsync(string groupName)
     {
-        logger.LogInformation("Group: {groupName}", groupName);
         var newGroup = new Group { Name = groupName };
         return context.Groups.FindOrAddAsync(context, g => g.Name.Equals(groupName), newGroup);
     }
 
     private Task<Grade> FindOrAddGradeAsync(string gradeName, Group group)
     {
-        logger.LogInformation("Grade: {gradeName}", gradeName);
         var newGrade = new Grade { Name = gradeName, Points = 0, Group = group };
         return context.Grades.FindOrAddAsync(context, g => g.Name.Equals(gradeName), newGrade);
     }
