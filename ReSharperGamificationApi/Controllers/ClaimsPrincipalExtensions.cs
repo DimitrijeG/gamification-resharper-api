@@ -4,13 +4,14 @@ namespace ReSharperGamificationApi.Controllers;
 
 public static class ClaimsPrincipalExtensions
 {
+    public const string UserIdClaim = ClaimTypes.NameIdentifier;
+    public const string FirstNameClaim = "first_name";
+    public const string LastNameClaim = "last_name";
+
     public static string Find(this ClaimsPrincipal claims, string type)
     {
         var claim = claims.FindFirst(type)?.Value;
-        if (claim == null)
-            throw new ClaimDoesNotExistException(type);
-
-        return claim;
+        return claim ?? throw new ClaimDoesNotExistException(type);
     }
 }
 

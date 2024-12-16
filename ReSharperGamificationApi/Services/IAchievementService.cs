@@ -2,65 +2,37 @@
 using Microsoft.EntityFrameworkCore;
 using ReSharperGamificationApi.Hubs;
 using ReSharperGamificationApi.Models;
-using ReSharperGamificationApi.Models.Achievements;
+using ReSharperGamificationApi.Models.Context;
 
 namespace ReSharperGamificationApi.Services;
 
 public interface IAchievementService
 {
     public DbSet<Achievement> Achievements { get; }
-    public Task<ICollection<Achievement>> SaveAll(User user, string groupName, IEnumerable<string> grades);
+    public Task<Achievement> Save(User user, long goalId, double progress);
 }
 
 public class AchievementService(
     GamificationContext context,
-    IHubContext<LeaderboardHub, ILeaderboardHub> hubContext) : IAchievementService
+    IHubContext<LeagueHub, ILeagueHub> hubContext) : IAchievementService
 {
-    private const double CompletedGroupPointsBonus = 100;
-
     public DbSet<Achievement> Achievements => context.Achievements;
 
-    public async Task<ICollection<Achievement>> SaveAll(User user, string groupName, IEnumerable<string> gradeNames)
+    public async Task<Achievement> Save(User user, long goalId, double progress)
     {
-        var group = await FindOrAddGroupAsync(groupName);
-        var grades = await Task.WhenAll(gradeNames
-            .Distinct()
-            .Select(grade => FindOrAddGradeAsync(grade, group)));
+        var achievement = await context.Achievements.FirstOrDefaultAsync(
+                              a => a.UserId.Equals(user.Id) && a.GoalId.Equals(goalId)) ??
+                          (await context.Achievements.AddAsync(
+                              new Achievement { UserId = user.Id, GoalId = goalId, Progress = progress })).Entity;
 
-        var unlocked = await GetByUserAndGroup(user.Id, group.Id);
-        var newAchievements = grades
-            .Where(grade => !unlocked.Exists(a => a.GradeId.Equals(grade.Id)))
-            .Select(grade => new Achievement { Grade = grade, User = user })
-            .ToList();
+        achievement.Progress = progress;
+        if (achievement.Progress.Equals(1))
+        {
+            user.Points += (await context.Goals.FindAsync(goalId))!.Points;
+        }
 
-        if (newAchievements.Count == 0) return [];
-
-        if (group.Grades.Count.Equals(unlocked.Count + newAchievements.Count))
-            user.Points += CompletedGroupPointsBonus;
-        user.Points += newAchievements.Sum(a => a.Grade.Points);
-
-        await context.Achievements.AddRangeAsync(newAchievements);
         await context.SaveChangesAsync();
-        await hubContext.Clients.All.UpdateLeaderboard();
-        return newAchievements;
-    }
-
-    private Task<List<Achievement>> GetByUserAndGroup(long userId, long groupId)
-    {
-        return context.Achievements
-            .Where(a => a.UserId.Equals(userId) && a.Grade.GroupId.Equals(groupId))
-            .ToListAsync();
-    }
-
-    private Task<Group> FindOrAddGroupAsync(string groupName)
-    {
-        var newGroup = new Group { Name = groupName };
-        return context.Groups.FindOrAddAsync(context, g => g.Name.Equals(groupName), newGroup);
-    }
-
-    private Task<Grade> FindOrAddGradeAsync(string gradeName, Group group)
-    {
-        var newGrade = new Grade { Name = gradeName, Points = 0, Group = group };
-        return context.Grades.FindOrAddAsync(context, g => g.Name.Equals(gradeName), newGrade);
+        await hubContext.Clients.All.UpdateLeague();
+        return achievement;
     }
 }

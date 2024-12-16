@@ -1,17 +1,43 @@
-﻿using ReSharperGamificationApi.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using ReSharperGamificationApi.Models;
+using ReSharperGamificationApi.Models.Context;
 
 namespace ReSharperGamificationApi.Services;
 
 public interface IUserService
 {
-    public Task<User> FindOrSaveAsync(string uid, string firstName, string lastName);
+    Task<User> FindOrSaveAsync(string uid, string firstName, string lastName, string accessToken);
+    Task<User?> FindByAccessTokenAsync(string accessToken);
 }
 
-public class UserService(GamificationContext context) : IUserService
+public class UserService(
+    GamificationContext context,
+    ILeagueService leagueService) : IUserService
 {
-    public async Task<User> FindOrSaveAsync(string uid, string firstName, string lastName)
+    public async Task<User> FindOrSaveAsync(string uid, string firstName, string lastName, string accessToken)
     {
-        var newUser = new User { Uid = uid, FirstName = firstName, LastName = lastName };
-        return await context.Users.FindOrAddAsync(context, u => u.Uid.Equals(uid), newUser);
+        var found = await context.Users.FirstOrDefaultAsync(u => u.Uid.Equals(uid));
+
+        if (found != null)
+        {
+            if (found.AccessToken == accessToken) return found;
+            found.AccessToken = accessToken;
+            await context.SaveChangesAsync();
+            return found;
+        }
+
+        var newUser = new User { Uid = uid, FirstName = firstName, LastName = lastName, AccessToken = accessToken };
+        await context.Users.AddAsync(newUser);
+        await leagueService.AddUserAsync(newUser);
+
+        await context.SaveChangesAsync();
+        return newUser;
+    }
+
+    public Task<User?> FindByAccessTokenAsync(string accessToken)
+    {
+        return context.Users
+            .Include(u => u.League)
+            .FirstOrDefaultAsync(u => u.AccessToken.Equals(accessToken));
     }
 }

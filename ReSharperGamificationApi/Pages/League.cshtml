@@ -1,0 +1,35 @@
+﻿@page "/league/{accessToken}"
+@model ReSharperGamificationApi.Pages.LeagueModel
+
+@{
+    Layout = "_Layout";
+    ViewBag.Title = "Leaderboard";
+}
+
+<h1 class="text-center my-4 display-4">@(Model.Rank) League</h1>
+
+<table class="table table-hover table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col" class="text-center" style="width: 5%;">#</th>
+            <th scope="col" style="width: 30%;">First Name</th>
+            <th scope="col" style="width: 30%;">Last Name</th>
+            <th scope="col" class="text-right" style="width: 15%;">Points</th>
+        </tr>
+    </thead>
+    <tbody id="leaderboardEntries">
+        @foreach (var entry in Model.LeaderboardEntries)
+        {
+            <tr>
+                <td class="text-center">@entry.Position</td>
+                <td>@entry.FirstName</td>
+                <td>@entry.LastName</td>
+                <td class="text-right">@entry.Points</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script type="text/javascript" src="~/lib/signalr/dist/browser/signalr.min.js"></script>
+<script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" leagueId="@(Model.LeagueId)" src="~/js/league.js"></script>

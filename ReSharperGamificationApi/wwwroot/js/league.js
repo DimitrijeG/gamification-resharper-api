@@ -1,17 +1,17 @@
-﻿var script = $("script[src*=leaderboard");
-var pageNumber = parseInt(script.attr("pageNumber"));
-var pageSize = parseInt(script.attr("pageSize"));
+﻿var script = $("script[src*=league");
+var leagueId = parseInt(script.attr("leagueId"));
 
 const connection = new signalR.HubConnectionBuilder()
-    .withUrl("/leaderboardHub")
+    .withUrl("/leagueHub")
     .build();
 
-connection.on("UpdateLeaderboard", async () => {
+connection.on("UpdateLeague", async () => {
     try {
-        const entries = await connection.invoke("GetUpdatedLeaderboard", pageNumber, pageSize);
+        const entries = await connection.invoke("GetUpdatedLeague", leagueId);
+        console.log(entries);
         updateLeaderboard(entries);
     } catch (error) {
-        console.error("Error retrieving leaderboard:", error);
+        console.error("Error retrieving league:", error);
     }
 });
 

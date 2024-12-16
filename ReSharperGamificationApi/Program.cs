@@ -4,21 +4,23 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ReSharperGamificationApi.Hubs;
-using ReSharperGamificationApi.Models;
+using ReSharperGamificationApi.Models.Context;
 using ReSharperGamificationApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddAutoMapper(typeof(GamificationProfile));
+builder.Services.AddScoped<IConfig>(_ => 
+    new Config(Path.Combine(AppContext.BaseDirectory, "Data", "config.json")));
 builder.Services.AddScoped<IAchievementService, AchievementService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<ILeaderboardService, LeaderboardService>();
+builder.Services.AddScoped<ILeagueService, LeagueService>();
 
 builder.Services.AddRazorPages();
 builder.Services.AddControllers();
 
-builder.Services.AddSignalR().AddHubOptions<LeaderboardHub>(opt =>
+builder.Services.AddSignalR().AddHubOptions<LeagueHub>(opt =>
 {
     opt.EnableDetailedErrors = true;
 });
@@ -103,7 +105,7 @@ app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapHub<LeaderboardHub>("/leaderboardHub");
+app.MapHub<LeagueHub>("/leagueHub");
 
 app.MapRazorPages();
 app.MapControllers();

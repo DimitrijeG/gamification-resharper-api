@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using Asp.Versioning;
+﻿using Asp.Versioning;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,17 +16,13 @@ public class AchievementsController(
     IAchievementService achievementService,
     IUserService userService) : ControllerBase
 {
-    private const string UserIdClaim = ClaimTypes.NameIdentifier;
-    private const string FirstNameClaim = "first_name";
-    private const string LastNameClaim = "last_name";
-
     // GET: api/v1/achievements
     [MapToApiVersion(1)]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<AchievementDtoV1>>> GetAchievementsV1()
+    public async Task<ActionResult<IEnumerable<AchievementResponseDtoV1>>> GetAchievementsV1()
     {
         return await achievementService.Achievements
-            .Select(a => mapper.Map<AchievementDtoV1>(a))
+            .Select(a => mapper.Map<AchievementResponseDtoV1>(a))
             .ToListAsync();
     }
 
@@ -35,20 +30,18 @@ public class AchievementsController(
     [MapToApiVersion(1)]
     [HttpPost]
     [Authorize]
-    public async Task<ActionResult<IEnumerable<AchievementDtoV1>>> PostAchievementsV1(AchievementWithGradesDtoV1 dto)
+    public async Task<ActionResult<AchievementResponseDtoV1>> PostAchievementV1(AchievementRequestDtoV1 dto)
     {
         try
         {
             var claims = HttpContext.User;
-            var uid = claims.Find(UserIdClaim);
-            var firstName = claims.Find(FirstNameClaim);
-            var lastName = claims.Find(LastNameClaim);
-            var user = await userService.FindOrSaveAsync(uid, firstName, lastName);
-            var saved = await achievementService
-                .SaveAll(user, dto.Group, dto.Grades);
+            var uid = claims.Find(ClaimsPrincipalExtensions.UserIdClaim);
+            var firstName = claims.Find(ClaimsPrincipalExtensions.FirstNameClaim);
+            var lastName = claims.Find(ClaimsPrincipalExtensions.LastNameClaim);
 
-            var mapped = saved.Select(mapper.Map<AchievementDtoV1>);
-            return CreatedAtAction(nameof(GetAchievementsV1), mapped);
+            var user = await userService.FindOrSaveAsync(uid, firstName, lastName, dto.AccessToken);
+            var saved = await achievementService.Save(user, dto.GoalId, dto.Progress);
+            return CreatedAtAction(nameof(GetAchievementsV1), mapper.Map<AchievementResponseDtoV1>(saved));
         }
         catch (ClaimDoesNotExistException e)
         {

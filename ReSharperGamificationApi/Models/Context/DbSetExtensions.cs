@@ -2,7 +2,7 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-namespace ReSharperGamificationApi.Models;
+namespace ReSharperGamificationApi.Models.Context;
 
 public static class DbSetExtensions
 {

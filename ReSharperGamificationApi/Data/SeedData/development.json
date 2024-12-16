@@ -4,35 +4,46 @@
     { "Id": 2, "Name": "Formatting" },
     { "Id": 3, "Name": "Autocompletion" }
   ],
-  "Grades": [
-    { "Id": 1, "GroupId": 1, "Name": "Bronze medal", "Points": 50 },
-    { "Id": 2, "GroupId": 1, "Name": "Silver medal", "Points": 70 },
-    { "Id": 3, "GroupId": 1, "Name": "Gold medal", "Points": 90 },
-    { "Id": 4, "GroupId": 2, "Name": "Yellow belt", "Points": 40 },
-    { "Id": 5, "GroupId": 2, "Name": "Blue belt", "Points": 60 },
-    { "Id": 6, "GroupId": 2, "Name": "Black belt", "Points": 80 },
-    { "Id": 7, "GroupId": 3, "Name": "Amethyst ring", "Points": 30 },
-    { "Id": 8, "GroupId": 3, "Name": "Emerald ring", "Points": 50 },
-    { "Id": 9, "GroupId": 3, "Name": "Diamond ring", "Points": 70 }
+  "Goals": [
+    { "Id": 1, "Name": "5 renaming", "Description": "Rename 5 variables", "Lifetime": 1, "Points": 20, "GroupId": 1 },
+    { "Id": 2, "Name": "10 renaming", "Description": "Rename 10 variables", "Lifetime": 2, "Points": 40, "GroupId": 1 },
+    { "Id": 3, "Name": "3 code extractions", "Description": "Extract 3 methods or variables", "Lifetime": 1, "Points": 25, "GroupId": 1 },
+    { "Id": 4, "Name": "5 code extractions", "Description": "Extract 5 methods or variables", "Lifetime": 2, "Points": 50, "GroupId": 1 },
+    { "Id": 5, "Name": "Format 10 files", "Description": "Apply formatting to 10 files", "Lifetime": 1, "Points": 15, "GroupId": 2 },
+    { "Id": 6, "Name": "Format 20 files", "Description": "Apply formatting to 20 files", "Lifetime": 3, "Points": 30, "GroupId": 2 },
+    { "Id": 7, "Name": "50 autocompletions", "Description": "Use autocompletion 50 times", "Lifetime": 2, "Points": 20, "GroupId": 3 },
+    { "Id": 8, "Name": "100 autocompletions", "Description": "Use autocompletion 100 times", "Lifetime": 3, "Points": 40, "GroupId": 3 },
+    { "Id": 9, "Name": "Refactor 3 classes", "Description": "Perform refactoring on 3 different classes", "Lifetime": 2, "Points": 35, "GroupId": 1 },
+    { "Id": 10, "Name": "Refactor 5 classes", "Description": "Perform refactoring on 5 different classes", "Lifetime": 3, "Points": 70, "GroupId": 1 }
+  ],
+  "Ranks": [
+    { "Id": 1, "Name": "Bronze" },
+    { "Id": 2, "Name": "Silver" },
+    { "Id": 3, "Name": "Gold" },
+    { "Id": 4, "Name": "Platinum" },
+    { "Id": 5, "Name": "Diamond" },
+    { "Id": 6, "Name": "Master" }
+  ],
+  "Leagues": [
+    { "Id": 1, "RankId": 1, "UserCount": 5 }
   ],
   "Users": [
-    { "Id": 1, "Uid": "01", "FirstName": "Anna", "LastName": "Johnson", "Points": 0 },
-    { "Id": 2, "Uid": "02", "FirstName": "Brian", "LastName": "Peters", "Points": 310 },
-    { "Id": 3, "Uid": "03", "FirstName": "Catherine", "LastName": "Sullivan", "Points": 100 },
-    { "Id": 4, "Uid": "04", "FirstName": "David", "LastName": "Smith", "Points": 130 },
-    { "Id": 5, "Uid": "05", "FirstName": "Eva", "LastName": "Davis", "Points": 250 }
+    { "Id": 1, "Uid": "01", "FirstName": "Anna", "LastName": "Johnson", "Points": 20, "LeagueId": 1 },
+    { "Id": 2, "Uid": "02", "FirstName": "Brian", "LastName": "Peters", "Points": 85, "LeagueId": 1 },
+    { "Id": 3, "Uid": "03", "FirstName": "Catherine", "LastName": "Sullivan", "Points": 55, "LeagueId": 1 },
+    { "Id": 4, "Uid": "04", "FirstName": "David", "LastName": "Smith", "Points": 75, "LeagueId": 1 },
+    { "Id": 5, "Uid": "05", "FirstName": "Eva", "LastName": "Davis", "Points": 110, "LeagueId": 1 }
   ],
   "Achievements": [
-    { "Id": 1, "GradeId": 1, "UserId": 2 },
-    { "Id": 2, "GradeId": 2, "UserId": 2 },
-    { "Id": 3, "GradeId": 3, "UserId": 2 },
-    { "Id": 4, "GradeId": 4, "UserId": 3 },
-    { "Id": 5, "GradeId": 5, "UserId": 3 },
-    { "Id": 6, "GradeId": 7, "UserId": 4 },
-    { "Id": 7, "GradeId": 3, "UserId": 4 },
-    { "Id": 8, "GradeId": 6, "UserId": 4 },
-    { "Id": 9, "GradeId": 7, "UserId": 5 },
-    { "Id": 10, "GradeId": 8, "UserId": 5 },
-    { "Id": 11, "GradeId": 9, "UserId": 5 }
+    { "Id": 1, "GoalId": 1, "UserId": 1, "Progress": 1.0 },
+    { "Id": 2, "GoalId": 5, "UserId": 2, "Progress": 1.0 },
+    { "Id": 3, "GoalId": 6, "UserId": 2, "Progress": 1.0 },
+    { "Id": 4, "GoalId": 8, "UserId": 2, "Progress": 1.0 },
+    { "Id": 5, "GoalId": 7, "UserId": 3, "Progress": 1.0 },
+    { "Id": 6, "GoalId": 9, "UserId": 3, "Progress": 1.0 },
+    { "Id": 7, "GoalId": 4, "UserId": 4, "Progress": 1.0 },
+    { "Id": 8, "GoalId": 3, "UserId": 4, "Progress": 1.0 },
+    { "Id": 9, "GoalId": 10, "UserId": 5, "Progress": 1.0 },
+    { "Id": 10, "GoalId": 2, "UserId": 5, "Progress": 1.0 }
   ]
 }
