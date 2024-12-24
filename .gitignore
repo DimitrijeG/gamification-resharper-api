@@ -238,3 +238,6 @@ _Pvt_Extensions
 
 # Migrations
 **/*Migrations/
+
+# IDEA
+**/.idea/
